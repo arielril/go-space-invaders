@@ -5,6 +5,7 @@ This project uses [Go-Gl](https://github.com/go-gl/gl) to create a scene with Op
 ## Dependencies
 This package uses [go modules](https://github.com/golang/go/wiki/Modules). Whenever you run `go build` or `go test` all dependencies will be downloaded automatically. See [go.mod](./go.mod) and [go.sum](go.sum) to see all modules used by this package.
 
+- Go: version >= 1.14
 - OpenGL for Go: `github.com/go-gl/gl/v2.1/gl`
 - GLFW: `github.com/go-gl/glfw/v3.3/glfw`
 
