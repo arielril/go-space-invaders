@@ -77,12 +77,10 @@ var x float32
 func Display(w *glfw.Window) {
 	x += .01
 
+	s := NewShip(ships[Ship4], Ship4)
+
 	gl.Color3f(1, 0, 0)
-	gl.Translatef(5, 5, 0)
+	gl.Scalef(.5, .5, 1)
+	s.Draw()
 
-	drawCar()
-
-	gl.Color3f(0, 0, 1)
-	gl.Translatef(x, 0, 0)
-	drawCar()
 }

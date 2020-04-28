@@ -10,7 +10,7 @@ import (
 
 // Setup the gl environment
 func Setup() {
-	gl.ClearColor(0, 0, 0, 1)
+	gl.ClearColor(255, 255, 255, 1)
 }
 
 // KeyCallback is a callback function for key strikes
@@ -47,7 +47,7 @@ func Reshape(w *glfw.Window) {
 	gl.MatrixMode(gl.PROJECTION)
 
 	gl.LoadIdentity()
-	gl.Ortho(0, 10, 0, 10, 1, 0)
+	gl.Ortho(-10, 10, -10, 10, 1, 0)
 
 	gl.MatrixMode(gl.MODELVIEW)
 

@@ -27,6 +27,8 @@ func init() {
 }
 
 func main() {
+	game.InitObjects()
+
 	win, _ := opengl.NewWindow(wWidth, wHeight, "Space Invaders")
 
 	win.SetKeyCallback(opengl.KeyCallback)
