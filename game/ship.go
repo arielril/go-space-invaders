@@ -25,11 +25,17 @@ type ship struct {
 	x, y  float32
 	sType ShipType
 	data  ShipData
+	scale float32
 }
 
 // Ship interface
 type Ship interface {
 	Draw()
+	SetPos(x, y float32) Ship
+	SetX(x float32) Ship
+	SetY(y float32) Ship
+	SetScale(sc float32) Ship
+	ResetScale() Ship
 }
 
 // NewShip creates a new Ship struct
@@ -39,20 +45,24 @@ func NewShip(m ShipData, t ShipType) Ship {
 		y:     0,
 		data:  m,
 		sType: t,
+		scale: 1,
 	}
 }
 
 func (s *ship) Draw() {
 	sHeight := float32(len(s.data))
-	// sWidth := float32(len(s.data[0]))
 
 	gl.PushMatrix()
 	{
-		gl.Color3f(0, 1, 0)
+		gl.Translatef(s.x, s.y, 0)
+		gl.Scalef(s.scale, s.scale, 1)
+
 		for i := range s.data {
 			y := float32(i)
 
-			for j := range s.data[i] {
+			for j, pixColor := range s.data[i] {
+				ChangeColorFromInt(pixColor)
+
 				x := float32(j)
 
 				gl.Begin(gl.QUADS)
@@ -67,4 +77,31 @@ func (s *ship) Draw() {
 		}
 	}
 	gl.PopMatrix()
+}
+
+func (s *ship) SetPos(x, y float32) Ship {
+	s.x = x
+	s.y = y
+
+	return s
+}
+
+func (s *ship) SetX(x float32) Ship {
+	s.x = x
+	return s
+}
+
+func (s *ship) SetY(y float32) Ship {
+	s.y = y
+	return s
+}
+
+func (s *ship) SetScale(sc float32) Ship {
+	s.scale = sc
+	return s
+}
+
+func (s *ship) ResetScale() Ship {
+	s.scale = 1
+	return s
 }

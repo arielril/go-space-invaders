@@ -5,82 +5,80 @@ import (
 	glfw "github.com/go-gl/glfw/v3.3/glfw"
 )
 
-func drawLines() {
-	gl.Begin(gl.LINES)
-	gl.Vertex2f(0, 0)
-	gl.Vertex2f(5, 5)
-	gl.End()
+var gameShips []Ship
+var gameCar Car
+var gameBullets []Bullet
 
-	gl.Begin(gl.LINES)
-	gl.Vertex2f(5, 5)
-	gl.Vertex2f(10, 0)
-	gl.End()
+const gameScale = .1
+
+// Init the game objects
+func Init() {
+	gameShips = append(
+		gameShips,
+		NewShip(ships[Ship1], Ship1).SetPos(-8, 9),
+		NewShip(ships[Ship1], Ship1).SetPos(-5, 9),
+		NewShip(ships[Ship1], Ship1).SetPos(-3, 9),
+		NewShip(ships[Ship1], Ship1).SetPos(0, 9),
+		NewShip(ships[Ship1], Ship1).SetPos(3, 9),
+		NewShip(ships[Ship1], Ship1).SetPos(5, 9),
+		NewShip(ships[Ship1], Ship1).SetPos(8, 9),
+
+		NewShip(ships[Ship1], Ship1).SetPos(-8, 7),
+		NewShip(ships[Ship1], Ship1).SetPos(-5, 7),
+		NewShip(ships[Ship1], Ship1).SetPos(-3, 7),
+		NewShip(ships[Ship1], Ship1).SetPos(0, 7),
+		NewShip(ships[Ship1], Ship1).SetPos(3, 7),
+		NewShip(ships[Ship1], Ship1).SetPos(5, 7),
+		NewShip(ships[Ship1], Ship1).SetPos(8, 7),
+
+		NewShip(ships[Ship1], Ship1).SetPos(-8, 5),
+		NewShip(ships[Ship1], Ship1).SetPos(-5, 5),
+		NewShip(ships[Ship1], Ship1).SetPos(-3, 5),
+		NewShip(ships[Ship1], Ship1).SetPos(0, 5),
+		NewShip(ships[Ship1], Ship1).SetPos(3, 5),
+		NewShip(ships[Ship1], Ship1).SetPos(5, 5),
+		NewShip(ships[Ship1], Ship1).SetPos(8, 5),
+	)
 }
 
-func siren() {
-	gl.Begin(gl.LINES)
-	{
-		gl.Vertex2f(-1, -1)
-		gl.Vertex2f(1, 1)
-		gl.Vertex2f(1, -1)
-		gl.Vertex2f(-1, 1)
+func drawShips() {
+	for _, v := range gameShips {
+		v.SetScale(gameScale).Draw()
 	}
-	gl.End()
 }
 
-func smallSiren() {
-	gl.PushMatrix()
-	{
-		gl.Scalef(.3, .3, 1)
-		siren()
+func drawBullets() {
+	for _, v := range gameBullets {
+		v.SetScale(gameScale).Draw()
 	}
-	gl.PopMatrix()
 }
-
-func spinningSmallSiren(ang float32) {
-	gl.PushMatrix()
-	{
-		gl.Rotatef(ang, 0, 0, 1)
-		smallSiren()
-	}
-	gl.PopMatrix()
-}
-
-func drawCarChassis() {
-	gl.Begin(gl.QUADS)
-	{
-		gl.Vertex2f(0, 0)
-		gl.Vertex2f(-2, 0)
-		gl.Vertex2f(-2, 1)
-		gl.Vertex2f(0, 1)
-	}
-	gl.End()
-}
-
-var sirenAngle float32
 
 func drawCar() {
+	gameCar.SetScale(gameScale).Draw()
+}
+
+func showAxis() {
 	gl.PushMatrix()
 	{
-		drawCarChassis()
-		gl.Color3f(0, 1, 0)
-		gl.Translatef(-1.5, 1.3, 0)
-		spinningSmallSiren(sirenAngle)
-		sirenAngle++
+		gl.Color3f(0, 0, 0)
+		gl.LineWidth(5)
+
+		gl.Begin(gl.LINES)
+
+		gl.Vertex2f(-20, 0)
+		gl.Vertex2f(20, 0)
+
+		gl.Vertex2f(0, 20)
+		gl.Vertex2f(0, -20)
+
+		gl.End()
 	}
 	gl.PopMatrix()
 }
-
-var x float32
 
 // Display the game
 func Display(w *glfw.Window) {
-	x += .01
+	showAxis()
 
-	s := NewShip(ships[Ship4], Ship4)
-
-	gl.Color3f(1, 0, 0)
-	gl.Scalef(.5, .5, 1)
-	s.Draw()
-
+	drawShips()
 }

@@ -3,6 +3,8 @@ package game
 import (
 	"sync"
 
+	"github.com/go-gl/gl/v2.1/gl"
+
 	"github.com/arielril/go-space-invaders/util"
 )
 
@@ -25,4 +27,17 @@ func InitObjects() {
 		colors = util.ParseFile("./templates/colors.txt")
 		car = util.ParseFile("./templates/car.txt")
 	})
+}
+
+// ChangeColorFromInt receives an int and translate the value to a RGB color
+func ChangeColorFromInt(c int) {
+	for _, v := range colors {
+		if v[0] == c {
+			r := float32(v[1])
+			g := float32(v[2])
+			b := float32(v[3])
+
+			gl.Color3f(r, g, b)
+		}
+	}
 }

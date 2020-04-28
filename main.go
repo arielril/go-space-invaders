@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	wWidth  = 900
-	wHeight = 1600
+	wWidth  = 800
+	wHeight = 600
 )
 
 func init() {
@@ -35,6 +35,7 @@ func main() {
 	win.SetCharCallback(opengl.CharCallback)
 
 	opengl.Setup()
+	game.Init()
 	for !win.ShouldClose() {
 		opengl.Reshape(win)
 		game.Display(win)
