@@ -8,15 +8,26 @@ import (
 	"github.com/arielril/go-space-invaders/util"
 )
 
-var ships map[ShipType]ShipData
+// ObjectData represents the matrix of the object
+type ObjectData [][]int
+
+var ships map[ShipType]ObjectData
 var colors [][]int
-var car [][]int
+var carData [][]int
 
 var once sync.Once
 
+// Object interface that represents the game objects
+type Object interface {
+	Draw()
+	SetPos(x, y float32) Object
+	SetScale(scale float32) Object
+	ResetScale() Object
+}
+
 // InitObjects initialize the objects for the game
 func InitObjects() {
-	ships = make(map[ShipType]ShipData, 0)
+	ships = make(map[ShipType]ObjectData, 0)
 
 	once.Do(func() {
 		ships[Ship1] = util.ParseFile("./templates/ship1.txt")
@@ -25,7 +36,7 @@ func InitObjects() {
 		ships[Ship4] = util.ParseFile("./templates/ship4.txt")
 
 		colors = util.ParseFile("./templates/colors.txt")
-		car = util.ParseFile("./templates/car.txt")
+		carData = util.ParseFile("./templates/car.txt")
 	})
 }
 

@@ -11,34 +11,41 @@ var gameBullets []Bullet
 
 const gameScale = .1
 
+// GetCar returns the car object
+func GetCar() Car {
+	return gameCar
+}
+
 // Init the game objects
 func Init() {
 	gameShips = append(
 		gameShips,
-		NewShip(ships[Ship1], Ship1).SetPos(-8, 9),
-		NewShip(ships[Ship1], Ship1).SetPos(-5, 9),
-		NewShip(ships[Ship1], Ship1).SetPos(-3, 9),
-		NewShip(ships[Ship1], Ship1).SetPos(0, 9),
-		NewShip(ships[Ship1], Ship1).SetPos(3, 9),
-		NewShip(ships[Ship1], Ship1).SetPos(5, 9),
-		NewShip(ships[Ship1], Ship1).SetPos(8, 9),
+		NewShip(ships[Ship1], Ship1).SetPos(-8, 9).(Ship),
+		NewShip(ships[Ship1], Ship1).SetPos(-5, 9).(Ship),
+		NewShip(ships[Ship1], Ship1).SetPos(-3, 9).(Ship),
+		NewShip(ships[Ship1], Ship1).SetPos(0, 9).(Ship),
+		NewShip(ships[Ship1], Ship1).SetPos(3, 9).(Ship),
+		NewShip(ships[Ship1], Ship1).SetPos(5, 9).(Ship),
+		NewShip(ships[Ship1], Ship1).SetPos(8, 9).(Ship),
 
-		NewShip(ships[Ship1], Ship1).SetPos(-8, 7),
-		NewShip(ships[Ship1], Ship1).SetPos(-5, 7),
-		NewShip(ships[Ship1], Ship1).SetPos(-3, 7),
-		NewShip(ships[Ship1], Ship1).SetPos(0, 7),
-		NewShip(ships[Ship1], Ship1).SetPos(3, 7),
-		NewShip(ships[Ship1], Ship1).SetPos(5, 7),
-		NewShip(ships[Ship1], Ship1).SetPos(8, 7),
+		NewShip(ships[Ship1], Ship1).SetPos(-8, 7).(Ship),
+		NewShip(ships[Ship1], Ship1).SetPos(-5, 7).(Ship),
+		NewShip(ships[Ship1], Ship1).SetPos(-3, 7).(Ship),
+		NewShip(ships[Ship1], Ship1).SetPos(0, 7).(Ship),
+		NewShip(ships[Ship1], Ship1).SetPos(3, 7).(Ship),
+		NewShip(ships[Ship1], Ship1).SetPos(5, 7).(Ship),
+		NewShip(ships[Ship1], Ship1).SetPos(8, 7).(Ship),
 
-		NewShip(ships[Ship1], Ship1).SetPos(-8, 5),
-		NewShip(ships[Ship1], Ship1).SetPos(-5, 5),
-		NewShip(ships[Ship1], Ship1).SetPos(-3, 5),
-		NewShip(ships[Ship1], Ship1).SetPos(0, 5),
-		NewShip(ships[Ship1], Ship1).SetPos(3, 5),
-		NewShip(ships[Ship1], Ship1).SetPos(5, 5),
-		NewShip(ships[Ship1], Ship1).SetPos(8, 5),
+		NewShip(ships[Ship1], Ship1).SetPos(-8, 5).(Ship),
+		NewShip(ships[Ship1], Ship1).SetPos(-5, 5).(Ship),
+		NewShip(ships[Ship1], Ship1).SetPos(-3, 5).(Ship),
+		NewShip(ships[Ship1], Ship1).SetPos(0, 5).(Ship),
+		NewShip(ships[Ship1], Ship1).SetPos(3, 5).(Ship),
+		NewShip(ships[Ship1], Ship1).SetPos(5, 5).(Ship),
+		NewShip(ships[Ship1], Ship1).SetPos(8, 5).(Ship),
 	)
+
+	gameCar = NewCar(carData).SetPos(0, 0).(Car)
 }
 
 func drawShips() {
@@ -80,5 +87,6 @@ func showAxis() {
 func Display(w *glfw.Window) {
 	showAxis()
 
+	drawCar()
 	drawShips()
 }

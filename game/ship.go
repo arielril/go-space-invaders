@@ -4,9 +4,6 @@ import (
 	"github.com/go-gl/gl/v2.1/gl"
 )
 
-// ShipData represents the matrix of the ship
-type ShipData [][]int
-
 // ShipType enum type
 type ShipType int
 
@@ -24,22 +21,18 @@ const (
 type ship struct {
 	x, y  float32
 	sType ShipType
-	data  ShipData
+	data  ObjectData
 	scale float32
 }
 
 // Ship interface
 type Ship interface {
-	Draw()
-	SetPos(x, y float32) Ship
-	SetX(x float32) Ship
-	SetY(y float32) Ship
-	SetScale(sc float32) Ship
-	ResetScale() Ship
+	Object
+	Die() Ship
 }
 
 // NewShip creates a new Ship struct
-func NewShip(m ShipData, t ShipType) Ship {
+func NewShip(m ObjectData, t ShipType) Ship {
 	return &ship{
 		x:     0,
 		y:     0,
@@ -79,7 +72,7 @@ func (s *ship) Draw() {
 	gl.PopMatrix()
 }
 
-func (s *ship) SetPos(x, y float32) Ship {
+func (s *ship) SetPos(x, y float32) Object {
 	s.x = x
 	s.y = y
 
@@ -96,12 +89,24 @@ func (s *ship) SetY(y float32) Ship {
 	return s
 }
 
-func (s *ship) SetScale(sc float32) Ship {
+func (s *ship) SetScale(sc float32) Object {
 	s.scale = sc
 	return s
 }
 
-func (s *ship) ResetScale() Ship {
+func (s *ship) ResetScale() Object {
 	s.scale = 1
+	return s
+}
+
+func (s *ship) Die() Ship {
+	var i int
+	for idx, v := range gameShips {
+		if v == s {
+			i = idx
+			break
+		}
+	}
+	gameShips = gameShips[: i-1 : i+1]
 	return s
 }

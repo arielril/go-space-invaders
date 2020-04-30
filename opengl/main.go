@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/arielril/go-space-invaders/game"
+
 	"github.com/go-gl/gl/v2.1/gl"
 	glfw "github.com/go-gl/glfw/v3.3/glfw"
 )
@@ -21,10 +23,21 @@ func KeyCallback(
 	action glfw.Action,
 	mods glfw.ModifierKey,
 ) {
-	switch key {
-	case glfw.KeyEscape:
-		os.Exit(0)
-		break
+	if action == glfw.Press {
+		switch key {
+		case glfw.KeyEscape:
+			os.Exit(0)
+			break
+		case glfw.KeyLeft:
+			game.GetCar().MoveLeft()
+			break
+		case glfw.KeyRight:
+			game.GetCar().MoveRight()
+			break
+		case glfw.KeySpace:
+			fmt.Println("Shoot!")
+			break
+		}
 	}
 }
 
