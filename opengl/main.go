@@ -35,7 +35,8 @@ func KeyCallback(
 			game.GetCar().MoveRight()
 			break
 		case glfw.KeySpace:
-			fmt.Println("Shoot!")
+			// fmt.Println("Shoot!")
+			game.GetCar().Shoot()
 			break
 		}
 	}

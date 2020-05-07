@@ -17,8 +17,10 @@ type Car interface {
 	Object
 	SetX(x float32) Car
 	GetX() float32
+	GetY() float32
 	MoveRight() Car
 	MoveLeft() Car
+	Shoot()
 }
 
 type car struct {
@@ -93,17 +95,24 @@ func (c *car) GetX() float32 {
 	return c.x
 }
 
+func (c *car) GetY() float32 {
+	return c.y
+}
+
 func (c *car) move(dir MoveDirection) Car {
 	moveStep := 1.0 * float32(.3)
+	var newPos float32
 
 	switch dir {
 	case leftMove:
-		c.SetX(c.GetX() - moveStep)
+		newPos = c.GetX() - moveStep
 		break
 	case rightMove:
-		c.SetX(c.GetX() + moveStep)
+		newPos = c.GetX() + moveStep
 		break
 	}
+
+	c.SetX(newPos)
 
 	return c
 }
@@ -114,4 +123,13 @@ func (c *car) MoveLeft() Car {
 
 func (c *car) MoveRight() Car {
 	return c.move(rightMove)
+}
+
+func (c *car) Shoot() {
+	bullet := NewBulletWithPos(
+		c.GetX(),
+		c.GetY(),
+	)
+
+	AddShoot(bullet)
 }
