@@ -29,6 +29,8 @@ type ship struct {
 type Ship interface {
 	Object
 	Die() Ship
+	GetX() float32
+	GetY() float32
 }
 
 // NewShip creates a new Ship struct
@@ -109,4 +111,18 @@ func (s *ship) Die() Ship {
 	}
 	gameShips = gameShips[: i-1 : i+1]
 	return s
+}
+
+func (s *ship) GetX() float32 {
+	return s.x
+}
+
+func (s *ship) GetY() float32 {
+	return s.y
+}
+
+func (s *ship) GetBoundingBox() BoundingBox {
+	bb := NewBoundingBox(0, 0, 0, 0)
+
+	return bb
 }

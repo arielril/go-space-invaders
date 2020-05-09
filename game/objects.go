@@ -23,6 +23,7 @@ type Object interface {
 	SetPos(x, y float32) Object
 	SetScale(scale float32) Object
 	ResetScale() Object
+	GetBoundingBox() BoundingBox
 }
 
 // InitObjects initialize the objects for the game

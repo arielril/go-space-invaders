@@ -13,6 +13,7 @@ type Bullet interface {
 	GetY() float32
 	GetX() float32
 	Remove(w *glfw.Window) bool
+	CheckHit(ship Ship) bool
 }
 
 type bullet struct {
@@ -102,9 +103,7 @@ func removeBullet(b *bullet) {
 		}
 	}
 
-	gameBullets[idx] = gameBullets[len(gameBullets)-1] // Copy last element to index i.
-	gameBullets[len(gameBullets)-1] = nil              // Erase last element (write zero value).
-	gameBullets = gameBullets[:len(gameBullets)-1]     // Truncate slice.
+	gameBullets[idx] = nil
 }
 
 func (b *bullet) Remove(w *glfw.Window) bool {
@@ -119,4 +118,20 @@ func (b *bullet) Remove(w *glfw.Window) bool {
 	}
 
 	return false
+}
+
+func (b *bullet) CheckHit(ship Ship) bool {
+	// bX := b.GetX()
+	// bY := b.GetY()
+
+	// sX := ship.GetX()
+	// sY := ship.GetY()
+
+	return false
+}
+
+func (b *bullet) GetBoundingBox() BoundingBox {
+	bb := NewBoundingBox(0, 0, 0, 0)
+
+	return bb
 }

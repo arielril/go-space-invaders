@@ -133,3 +133,9 @@ func (c *car) Shoot() {
 
 	AddShoot(bullet)
 }
+
+func (c *car) GetBoundingBox() BoundingBox {
+	bb := NewBoundingBox(0, 0, 0, 0)
+
+	return bb
+}

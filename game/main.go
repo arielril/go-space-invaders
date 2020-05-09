@@ -64,13 +64,11 @@ func drawShips() {
 	}
 }
 
-func drawBullets(w *glfw.Window) {
-	// check if the bullet is gone and remove it
+func drawBullets() {
 	for _, v := range gameBullets {
-		v.Remove(w)
-	}
-
-	for _, v := range gameBullets {
+		if v == nil {
+			continue
+		}
 		v.SetScale(gameScale).Draw()
 		v.Move()
 	}
@@ -78,6 +76,22 @@ func drawBullets(w *glfw.Window) {
 
 func drawCar() {
 	gameCar.SetScale(gameScale).Draw()
+}
+
+func drawGround() {
+	gl.PushMatrix()
+	{
+		gl.Color3f(.08, .5, 0) // #158000
+		gl.LineWidth(10)
+
+		gl.Begin(gl.LINES)
+		{
+			gl.Vertex2f(-20, .020)
+			gl.Vertex2f(20, .020)
+		}
+		gl.End()
+	}
+	gl.PopMatrix()
 }
 
 func showAxis() {
@@ -99,13 +113,33 @@ func showAxis() {
 	gl.PopMatrix()
 }
 
+func checkShipKill() {
+	for _, bull := range gameBullets {
+		if bull == nil {
+			continue
+		}
+
+		for _, sh := range gameShips {
+			bull.CheckHit(sh)
+			// if the bullet hit the ship, the ship must die :D
+		}
+
+	}
+}
+
 // Display the game
 func Display(w *glfw.Window) {
-
+	// draw objects
+	drawGround()
 	drawCar()
 	drawShips()
-	drawBullets(w)
+	drawBullets()
 
-	// check hit
-	// kill ships
+	// TODO: check hit
+	// TODO: kill ships
+	// TODO: add lives for the player
+
+	// clear game objects/screen
+	removeBulletsFromGame(w)
+	optimizeGame()
 }
