@@ -50,10 +50,10 @@ func Init() {
 
 		// NewShip(ships[Ship1], Ship1).SetPos(-8, 5).(Ship),
 		// NewShip(ships[Ship2], Ship2).SetPos(-5, 5).(Ship),
-		NewShip(ships[Ship1], Ship1).SetPos(-3, 5).(Ship),
+		// NewShip(ships[Ship1], Ship1).SetPos(-3, 5).(Ship),
 		NewShip(ships[Ship1], Ship1).SetPos(3, 5).(Ship),
 		// NewShip(ships[Ship2], Ship2).SetPos(3, 5).(Ship),
-		// NewShip(ships[Ship1], Ship1).SetPos(5, 5).(Ship),
+		NewShip(ships[Ship1], Ship1).SetPos(5, 5).(Ship),
 		// NewShip(ships[Ship4], Ship4).SetPos(8, 5).(Ship),
 	)
 
@@ -164,7 +164,6 @@ func Display(w *glfw.Window) {
 	// check for collisions
 	checkShipKill()
 
-	// TODO: kill ships
 	// TODO: add lives for the player
 
 	// clear game objects/screen
