@@ -14,6 +14,15 @@ func optimizeGame() {
 		}
 	}
 	gameBullets = auxGameBullets
+
+	// remove nil ships
+	auxGameShips := make([]Ship, 0)
+	for _, v := range gameShips {
+		if v != nil {
+			auxGameShips = append(auxGameShips, v)
+		}
+	}
+	gameShips = auxGameShips
 }
 
 // removeBulletsFromGame

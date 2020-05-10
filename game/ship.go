@@ -28,7 +28,7 @@ type ship struct {
 // Ship interface
 type Ship interface {
 	Object
-	Die() Ship
+	Die()
 	GetX() float32
 	GetY() float32
 }
@@ -101,7 +101,7 @@ func (s *ship) ResetScale() Object {
 	return s
 }
 
-func (s *ship) Die() Ship {
+func (s *ship) Die() {
 	var i int
 	for idx, v := range gameShips {
 		if v == s {
@@ -109,8 +109,7 @@ func (s *ship) Die() Ship {
 			break
 		}
 	}
-	gameShips = gameShips[: i-1 : i+1]
-	return s
+	gameShips[i] = nil
 }
 
 func (s *ship) GetX() float32 {
@@ -122,7 +121,10 @@ func (s *ship) GetY() float32 {
 }
 
 func (s *ship) GetBoundingBox() BoundingBox {
-	bb := NewBoundingBox(0, 0, 0, 0)
+	shipWidth := float32(len(s.data[0]))
+	shipHeight := float32(len(s.data))
+
+	bb := NewBoundingBox(s.GetX(), s.GetY(), shipWidth, shipHeight)
 
 	return bb
 }

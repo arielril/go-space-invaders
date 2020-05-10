@@ -13,7 +13,7 @@ type Bullet interface {
 	GetY() float32
 	GetX() float32
 	Remove(w *glfw.Window) bool
-	CheckHit(ship Ship) bool
+	Hit()
 }
 
 type bullet struct {
@@ -120,18 +120,15 @@ func (b *bullet) Remove(w *glfw.Window) bool {
 	return false
 }
 
-func (b *bullet) CheckHit(ship Ship) bool {
-	// bX := b.GetX()
-	// bY := b.GetY()
-
-	// sX := ship.GetX()
-	// sY := ship.GetY()
-
-	return false
+func (b *bullet) Hit() {
+	removeBullet(b)
 }
 
 func (b *bullet) GetBoundingBox() BoundingBox {
-	bb := NewBoundingBox(0, 0, 0, 0)
+	bWidth := float32(1)
+	bHeight := float32(2)
+
+	bb := NewBoundingBox(b.GetX(), b.GetY(), bWidth, bHeight)
 
 	return bb
 }

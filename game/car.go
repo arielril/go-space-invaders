@@ -135,7 +135,10 @@ func (c *car) Shoot() {
 }
 
 func (c *car) GetBoundingBox() BoundingBox {
-	bb := NewBoundingBox(0, 0, 0, 0)
+	carWidth := float32(len(c.data[0]))
+	carHeight := float32(len(c.data))
+
+	bb := NewBoundingBox(c.GetX(), c.GetY(), carWidth, carHeight)
 
 	return bb
 }

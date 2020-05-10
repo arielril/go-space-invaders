@@ -1,6 +1,8 @@
 package game
 
 import (
+	"fmt"
+
 	"github.com/go-gl/gl/v2.1/gl"
 	glfw "github.com/go-gl/glfw/v3.3/glfw"
 )
@@ -30,29 +32,29 @@ func AddShoot(b Bullet) {
 func Init() {
 	gameShips = append(
 		gameShips,
-		NewShip(ships[Ship1], Ship1).SetPos(-8, 9).(Ship),
-		NewShip(ships[Ship2], Ship2).SetPos(-5, 9).(Ship),
-		NewShip(ships[Ship1], Ship1).SetPos(-3, 9).(Ship),
-		NewShip(ships[Ship1], Ship1).SetPos(0, 9).(Ship),
-		NewShip(ships[Ship4], Ship4).SetPos(3, 9).(Ship),
-		NewShip(ships[Ship1], Ship1).SetPos(5, 9).(Ship),
-		NewShip(ships[Ship3], Ship3).SetPos(8, 9).(Ship),
+		// NewShip(ships[Ship1], Ship1).SetPos(-8, 9).(Ship),
+		// NewShip(ships[Ship2], Ship2).SetPos(-5, 9).(Ship),
+		// NewShip(ships[Ship1], Ship1).SetPos(-3, 9).(Ship),
+		// NewShip(ships[Ship1], Ship1).SetPos(0, 9).(Ship),
+		// NewShip(ships[Ship4], Ship4).SetPos(3, 9).(Ship),
+		// NewShip(ships[Ship1], Ship1).SetPos(5, 9).(Ship),
+		// NewShip(ships[Ship3], Ship3).SetPos(8, 9).(Ship),
 
-		NewShip(ships[Ship3], Ship3).SetPos(-8, 7).(Ship),
-		NewShip(ships[Ship3], Ship3).SetPos(-5, 7).(Ship),
-		NewShip(ships[Ship3], Ship3).SetPos(-3, 7).(Ship),
-		NewShip(ships[Ship3], Ship3).SetPos(0, 7).(Ship),
-		NewShip(ships[Ship3], Ship3).SetPos(3, 7).(Ship),
-		NewShip(ships[Ship3], Ship3).SetPos(5, 7).(Ship),
-		NewShip(ships[Ship3], Ship3).SetPos(8, 7).(Ship),
+		// NewShip(ships[Ship3], Ship3).SetPos(-8, 7).(Ship),
+		// NewShip(ships[Ship3], Ship3).SetPos(-5, 7).(Ship),
+		// NewShip(ships[Ship3], Ship3).SetPos(-3, 7).(Ship),
+		// NewShip(ships[Ship3], Ship3).SetPos(0, 7).(Ship),
+		// NewShip(ships[Ship3], Ship3).SetPos(3, 7).(Ship),
+		// NewShip(ships[Ship3], Ship3).SetPos(5, 7).(Ship),
+		// NewShip(ships[Ship3], Ship3).SetPos(8, 7).(Ship),
 
-		NewShip(ships[Ship1], Ship1).SetPos(-8, 5).(Ship),
-		NewShip(ships[Ship2], Ship2).SetPos(-5, 5).(Ship),
+		// NewShip(ships[Ship1], Ship1).SetPos(-8, 5).(Ship),
+		// NewShip(ships[Ship2], Ship2).SetPos(-5, 5).(Ship),
 		NewShip(ships[Ship1], Ship1).SetPos(-3, 5).(Ship),
-		NewShip(ships[Ship1], Ship1).SetPos(0, 5).(Ship),
-		NewShip(ships[Ship2], Ship2).SetPos(3, 5).(Ship),
-		NewShip(ships[Ship1], Ship1).SetPos(5, 5).(Ship),
-		NewShip(ships[Ship4], Ship4).SetPos(8, 5).(Ship),
+		NewShip(ships[Ship1], Ship1).SetPos(3, 5).(Ship),
+		// NewShip(ships[Ship2], Ship2).SetPos(3, 5).(Ship),
+		// NewShip(ships[Ship1], Ship1).SetPos(5, 5).(Ship),
+		// NewShip(ships[Ship4], Ship4).SetPos(8, 5).(Ship),
 	)
 
 	gameCar = NewCar(carData).SetPos(0, 0).(Car)
@@ -119,11 +121,35 @@ func checkShipKill() {
 			continue
 		}
 
+		bulletBB := bull.GetBoundingBox()
+		hit := false
+
 		for _, sh := range gameShips {
-			bull.CheckHit(sh)
-			// if the bullet hit the ship, the ship must die :D
+			shipBB := sh.GetBoundingBox()
+
+			if bulletBB.CheckCollision(shipBB) {
+				sh.Die()
+
+				fmt.Printf("Car  = (%v, %v)\n", GetCar().GetX(), GetCar().GetY())
+				fmt.Printf(
+					"Ship = (%v, %v)\n",
+					sh.GetX()*gameScale,
+					sh.GetY()*gameScale,
+				)
+				fmt.Printf(
+					"Bull = (%v, %v)\n",
+					bull.GetX()*gameScale,
+					bull.GetY()*gameScale,
+				)
+
+				hit = true
+				break
+			}
 		}
 
+		if hit {
+			bull.Hit()
+		}
 	}
 }
 
@@ -135,7 +161,9 @@ func Display(w *glfw.Window) {
 	drawShips()
 	drawBullets()
 
-	// TODO: check hit
+	// check for collisions
+	checkShipKill()
+
 	// TODO: kill ships
 	// TODO: add lives for the player
 

@@ -1,50 +1,73 @@
 package game
 
+import (
+	"fmt"
+	"math"
+)
+
 type boundingBox struct {
-	x, y, width, height float32
+	xCenter, yCenter, xWidth, yWidth float32
 }
 
 // BoundingBox interface
 type BoundingBox interface {
-	CheckColision(bbAgainst BoundingBox) bool
-	GetPos() (x, y float32)
-	GetSize() (width, height float32)
+	CheckCollision(bbAgainst BoundingBox) bool
+	GetCenterPoint() (x, y float32)
+	GetHalfWidthPoint() (x, y float32)
 }
 
 // NewBoundingBox creates a new bounding box pointer
 func NewBoundingBox(x, y, width, height float32) BoundingBox {
+	xCenter := (x + (width / 2))  // * gameScale
+	yCenter := (y + (height / 2)) // * gameScale
+
+	xWidth := (width / 2)  // * gameScale
+	yWidth := (height / 2) // * gameScale
+
 	return &boundingBox{
-		x:      x,
-		y:      y,
-		width:  width,
-		height: height,
+		xCenter, yCenter, xWidth, yWidth,
 	}
 }
 
-// CheckColision
+// CheckCollision
 // verify if two bounding boxes has colidded
 //
 // Returns:
-// 	- true if there is a colision
-// 	- false if there is no colision
-func (bb *boundingBox) CheckColision(bb2 BoundingBox) bool {
-	bb2X, bb2Y := bb2.GetPos()
-	bb2Width, bb2Height := bb2.GetSize()
+// 	- true if there is a collision
+// 	- false if there is no collision
+func (bb *boundingBox) CheckCollision(bb2 BoundingBox) bool {
+	bbX, bbY := bb.GetCenterPoint()
+	bbXWidth, bbYWidth := bb.GetHalfWidthPoint()
 
-	if bb.x < bb2X+bb2Width &&
-		bb.x+bb.width > bb2X &&
-		bb.y < bb2Y+bb2Height &&
-		bb.y+bb.height > bb2Y {
-		return true
+	bb2X, bb2Y := bb2.GetCenterPoint()
+	bb2XWidth, bb2YWidth := bb2.GetHalfWidthPoint()
+
+	fmt.Printf("BBc => (%v, %v)\n", bbX, bbY)
+	fmt.Printf("BB2c => (%v, %v)\n", bb2X, bb2Y)
+
+	fmt.Printf("BBH => (%v, %v)\n", bbXWidth, bbYWidth)
+	fmt.Printf("BB2H => (%v, %v)\n\n", bb2XWidth, bb2YWidth)
+
+	if math.Abs(float64(bbX-bb2X)) > float64(bbXWidth+bb2XWidth) {
+		return false
 	}
 
-	return false
+	if math.Abs(float64(bbY-bb2Y)) > float64(bbYWidth+bb2YWidth) {
+		return false
+	}
+
+	return true
 }
 
-func (bb *boundingBox) GetPos() (x, y float32) {
-	return bb.x, bb.y
+func (bb *boundingBox) GetCenterPoint() (x, y float32) {
+	x = bb.xCenter
+	y = bb.yCenter
+	return x, y
 }
 
-func (bb *boundingBox) GetSize() (width, height float32) {
-	return bb.width, bb.height
+func (bb *boundingBox) GetHalfWidthPoint() (x, y float32) {
+	x = bb.xWidth
+	y = bb.yWidth
+
+	return x, y
 }
