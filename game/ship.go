@@ -1,6 +1,10 @@
 package game
 
 import (
+	"fmt"
+	"math/rand"
+	"time"
+
 	"github.com/go-gl/gl/v2.1/gl"
 )
 
@@ -18,11 +22,20 @@ const (
 	Ship4
 )
 
+// measured in seconds
+var shipSpeeds map[ShipType]float32 = map[ShipType]float32{
+	Ship1: 12,
+	Ship2: 9,
+	Ship3: 5,
+	Ship4: 15,
+}
+
 type ship struct {
 	x, y  float32
 	sType ShipType
 	data  ObjectData
 	scale float32
+	speed float32
 }
 
 // Ship interface
@@ -31,17 +44,28 @@ type Ship interface {
 	Die()
 	GetX() float32
 	GetY() float32
+	Collide(obj Object)
+	Move()
+	SetSpeed(fps float32) Ship
 }
 
 // NewShip creates a new Ship struct
 func NewShip(m ObjectData, t ShipType) Ship {
+	// (10 units * (1/fps)s ) in Xs
+	speed := getShipSpeed(float32(maxFps), shipSpeeds[t])
+
 	return &ship{
 		x:     0,
 		y:     0,
 		data:  m,
 		sType: t,
 		scale: 1,
+		speed: speed,
 	}
+}
+
+func getShipSpeed(fps, shipSpeed float32) float32 {
+	return float32(10*(1/fps)) / shipSpeed
 }
 
 func (s *ship) Draw() {
@@ -55,8 +79,8 @@ func (s *ship) Draw() {
 		for i := range s.data {
 			y := float32(i)
 
-			for j, pixColor := range s.data[i] {
-				ChangeColorFromInt(pixColor)
+			for j, quadColor := range s.data[i] {
+				ChangeColorFromInt(quadColor)
 
 				x := float32(j)
 
@@ -121,10 +145,41 @@ func (s *ship) GetY() float32 {
 }
 
 func (s *ship) GetBoundingBox() BoundingBox {
-	shipWidth := float32(len(s.data[0]))
-	shipHeight := float32(len(s.data))
+	shipWidth := float64(len(s.data[0]))
+	fmt.Printf("Ship height %v\n", len(s.data))
+	shipHeight := float64(len(s.data))
 
-	bb := NewBoundingBox(s.GetX(), s.GetY(), shipWidth, shipHeight)
+	bb := NewBoundingBox(
+		float64(s.GetX()),
+		float64(s.GetY()),
+		shipWidth,
+		shipHeight,
+	)
 
 	return bb
+}
+
+func (s *ship) Collide(obj Object) {
+	// TODO execute the collision of the ship with some object
+}
+
+func (s *ship) SetSpeed(fps float32) Ship {
+	s.speed = getShipSpeed(fps, shipSpeeds[s.sType])
+	return s
+}
+
+func (s *ship) Move() {
+	moveStep := s.speed
+	newY := s.GetY() - moveStep
+	if newY <= 0 {
+		s.RestartPos()
+	} else {
+		s.SetY(newY)
+	}
+}
+
+func (s *ship) RestartPos() {
+	fmt.Printf("Ship (%v) arrived in: %v s\n", s.sType, time.Since(startTime).Seconds())
+	r := float32(rand.Intn(20))
+	s.SetPos(r, 10)
 }

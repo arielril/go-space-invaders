@@ -14,6 +14,7 @@ type ObjectData [][]int
 var ships map[ShipType]ObjectData
 var colors [][]int
 var carData [][]int
+var lifeData [][]int
 
 var once sync.Once
 
@@ -38,6 +39,7 @@ func InitObjects() {
 
 		colors = util.ParseFile("./templates/colors.txt")
 		carData = util.ParseFile("./templates/car.txt")
+		lifeData = util.ParseFile("./templates/life.txt")
 	})
 }
 

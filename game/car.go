@@ -21,6 +21,7 @@ type Car interface {
 	MoveRight() Car
 	MoveLeft() Car
 	Shoot()
+	ResetPos() Car
 }
 
 type car struct {
@@ -135,10 +136,20 @@ func (c *car) Shoot() {
 }
 
 func (c *car) GetBoundingBox() BoundingBox {
-	carWidth := float32(len(c.data[0]))
-	carHeight := float32(len(c.data))
+	carWidth := float64(len(c.data[0]))
+	carHeight := float64(len(c.data))
 
-	bb := NewBoundingBox(c.GetX(), c.GetY(), carWidth, carHeight)
+	bb := NewBoundingBox(
+		float64(c.GetX()),
+		float64(c.GetY()),
+		carWidth,
+		carHeight,
+	)
 
 	return bb
+}
+
+func (c *car) ResetPos() Car {
+	c.SetPos(0, 0)
+	return c
 }

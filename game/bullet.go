@@ -19,14 +19,18 @@ type Bullet interface {
 type bullet struct {
 	x, y  float32
 	scale float32
+	speed float32
 }
 
 // NewBullet returns a new bullet struct
 func NewBullet() Bullet {
+	speed := (10 * (1 / float32(maxFps))) / 3
+
 	return &bullet{
 		x:     0,
 		y:     0,
 		scale: 1,
+		speed: speed,
 	}
 }
 
@@ -41,6 +45,7 @@ func (b *bullet) Draw() {
 	gl.PushMatrix()
 	{
 		gl.Color3f(0, 0, 0)
+
 		gl.Translatef(b.x, b.y, 0)
 		gl.Scalef(b.scale, b.scale, 1)
 
@@ -90,7 +95,7 @@ func (b *bullet) GetX() float32 {
 }
 
 func (b *bullet) Move() {
-	moveStep := 1.0 * float32(.15)
+	moveStep := b.speed
 	b.SetY(b.GetY() + moveStep)
 }
 
@@ -107,12 +112,12 @@ func removeBullet(b *bullet) {
 }
 
 func (b *bullet) Remove(w *glfw.Window) bool {
-	if b.GetY() < -10 || b.GetY() > 10 {
+	if b.GetX() < 0 || b.GetX() > 20 {
 		removeBullet(b)
 		return true
 	}
 
-	if b.GetX() > 10 {
+	if b.GetY() > 10 {
 		removeBullet(b)
 		return true
 	}
@@ -125,10 +130,15 @@ func (b *bullet) Hit() {
 }
 
 func (b *bullet) GetBoundingBox() BoundingBox {
-	bWidth := float32(1)
-	bHeight := float32(2)
+	bWidth := float64(2)
+	bHeight := float64(2)
 
-	bb := NewBoundingBox(b.GetX(), b.GetY(), bWidth, bHeight)
+	bb := NewBoundingBox(
+		float64(b.GetX()),
+		float64(b.GetY()),
+		bWidth,
+		bHeight,
+	)
 
 	return bb
 }

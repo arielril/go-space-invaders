@@ -2,7 +2,9 @@ package game
 
 import (
 	"fmt"
+	"time"
 
+	"github.com/arielril/go-space-invaders/util"
 	"github.com/go-gl/gl/v2.1/gl"
 	glfw "github.com/go-gl/glfw/v3.3/glfw"
 )
@@ -10,59 +12,39 @@ import (
 var gameShips []Ship
 var gameCar Car
 var gameBullets []Bullet
+var fps util.FPS
+var maxFps float64 = 30
+var startTime time.Time
 
 const (
 	gameScale = .1
 	maxShoots = 15
 )
 
-// GetCar returns the car object
-func GetCar() Car {
-	return gameCar
-}
-
-// AddShoot add a new bullet to the game
-func AddShoot(b Bullet) {
-	if len(gameBullets) < maxShoots {
-		gameBullets = append(gameBullets, b)
-	}
-}
-
 // Init the game objects
 func Init() {
-	gameShips = append(
-		gameShips,
-		// NewShip(ships[Ship1], Ship1).SetPos(-8, 9).(Ship),
-		// NewShip(ships[Ship2], Ship2).SetPos(-5, 9).(Ship),
-		// NewShip(ships[Ship1], Ship1).SetPos(-3, 9).(Ship),
-		// NewShip(ships[Ship1], Ship1).SetPos(0, 9).(Ship),
-		// NewShip(ships[Ship4], Ship4).SetPos(3, 9).(Ship),
-		// NewShip(ships[Ship1], Ship1).SetPos(5, 9).(Ship),
-		// NewShip(ships[Ship3], Ship3).SetPos(8, 9).(Ship),
+	gameShips = []Ship{
+		NewShip(ships[Ship2], Ship2).SetPos(5, 5).(Ship),
+		// NewShip(ships[Ship3], Ship3).SetPos(2, 10).(Ship),
+		// NewShip(ships[Ship1], Ship1).SetPos(7, 10).(Ship),
+		// NewShip(ships[Ship4], Ship4).SetPos(0, 10).(Ship),
+	}
 
-		// NewShip(ships[Ship3], Ship3).SetPos(-8, 7).(Ship),
-		// NewShip(ships[Ship3], Ship3).SetPos(-5, 7).(Ship),
-		// NewShip(ships[Ship3], Ship3).SetPos(-3, 7).(Ship),
-		// NewShip(ships[Ship3], Ship3).SetPos(0, 7).(Ship),
-		// NewShip(ships[Ship3], Ship3).SetPos(3, 7).(Ship),
-		// NewShip(ships[Ship3], Ship3).SetPos(5, 7).(Ship),
-		// NewShip(ships[Ship3], Ship3).SetPos(8, 7).(Ship),
-
-		// NewShip(ships[Ship1], Ship1).SetPos(-8, 5).(Ship),
-		// NewShip(ships[Ship2], Ship2).SetPos(-5, 5).(Ship),
-		// NewShip(ships[Ship1], Ship1).SetPos(-3, 5).(Ship),
-		NewShip(ships[Ship1], Ship1).SetPos(3, 5).(Ship),
-		// NewShip(ships[Ship2], Ship2).SetPos(3, 5).(Ship),
-		NewShip(ships[Ship1], Ship1).SetPos(5, 5).(Ship),
-		// NewShip(ships[Ship4], Ship4).SetPos(8, 5).(Ship),
-	)
-
-	gameCar = NewCar(carData).SetPos(0, 0).(Car)
+	gameCar = NewCar(carData).SetPos(10, 0).(Car)
+	playerLives = []Life{
+		NewLife(lifeData, 17, 9),
+		NewLife(lifeData, 18, 9),
+		NewLife(lifeData, 19, 9),
+	}
+	fps = util.NewFps()
+	startTime = time.Now()
+	fmt.Printf("Started at: %v\n", startTime)
 }
 
 func drawShips() {
 	for _, v := range gameShips {
 		v.SetScale(gameScale).Draw()
+		// v.SetSpeed(float32(fps.GetFPS())).Move()
 	}
 }
 
@@ -78,6 +60,12 @@ func drawBullets() {
 
 func drawCar() {
 	gameCar.SetScale(gameScale).Draw()
+}
+
+func drawLives() {
+	for _, l := range playerLives {
+		l.SetScale(gameScale).Draw()
+	}
 }
 
 func drawGround() {
@@ -115,58 +103,55 @@ func showAxis() {
 	gl.PopMatrix()
 }
 
-func checkShipKill() {
-	for _, bull := range gameBullets {
-		if bull == nil {
+func drawBoundingBoxes() {
+	for _, b := range gameBullets {
+		if b == nil {
 			continue
 		}
+		b.GetBoundingBox().Draw()
+	}
 
-		bulletBB := bull.GetBoundingBox()
-		hit := false
-
-		for _, sh := range gameShips {
-			shipBB := sh.GetBoundingBox()
-
-			if bulletBB.CheckCollision(shipBB) {
-				sh.Die()
-
-				fmt.Printf("Car  = (%v, %v)\n", GetCar().GetX(), GetCar().GetY())
-				fmt.Printf(
-					"Ship = (%v, %v)\n",
-					sh.GetX()*gameScale,
-					sh.GetY()*gameScale,
-				)
-				fmt.Printf(
-					"Bull = (%v, %v)\n",
-					bull.GetX()*gameScale,
-					bull.GetY()*gameScale,
-				)
-
-				hit = true
-				break
-			}
+	for _, s := range gameShips {
+		if s == nil {
+			continue
 		}
+		s.GetBoundingBox().Draw()
+	}
+}
 
-		if hit {
-			bull.Hit()
-		}
+func displayFps() {
+	acc := fps.SetFPS().GetAccumulated()
+	if acc >= 1 { // print every second
+		fmt.Printf("FPS: %v\n", fps.GetFPS())
+		fps.Reset()
 	}
 }
 
 // Display the game
 func Display(w *glfw.Window) {
+	startTime := time.Now()
+	displayFps()
+
 	// draw objects
 	drawGround()
+	drawLives()
 	drawCar()
+	// drawBoundingBoxes()
 	drawShips()
 	drawBullets()
 
 	// check for collisions
-	checkShipKill()
-
-	// TODO: add lives for the player
+	doCollisions()
 
 	// clear game objects/screen
 	removeBulletsFromGame(w)
 	optimizeGame()
+
+	if !IsAlive() {
+		// TODO end game
+	}
+
+	time.Sleep(
+		time.Second/time.Duration(maxFps) - time.Since(startTime),
+	)
 }

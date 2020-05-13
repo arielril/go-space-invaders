@@ -61,7 +61,7 @@ func Reshape(w *glfw.Window) {
 	gl.MatrixMode(gl.PROJECTION)
 
 	gl.LoadIdentity()
-	gl.Ortho(-10, 10, 0, 10, 1, 0)
+	gl.Ortho(0, 20, 0, 10, 1, 0)
 
 	gl.MatrixMode(gl.MODELVIEW)
 
