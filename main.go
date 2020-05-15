@@ -6,7 +6,6 @@ import (
 
 	"github.com/arielril/go-space-invaders/game"
 	"github.com/arielril/go-space-invaders/opengl"
-	"github.com/arielril/go-space-invaders/util"
 	glfw "github.com/go-gl/glfw/v3.3/glfw"
 )
 
@@ -14,8 +13,6 @@ const (
 	wWidth  = 800
 	wHeight = 600
 )
-
-var fps util.FPS
 
 func init() {
 	runtime.LockOSThread()
@@ -33,6 +30,7 @@ func main() {
 	game.InitObjects()
 
 	win, _ := opengl.NewWindow(wWidth, wHeight, "Space Invaders")
+	defer glfw.Terminate()
 
 	win.SetKeyCallback(opengl.KeyCallback)
 	win.SetCharCallback(opengl.CharCallback)

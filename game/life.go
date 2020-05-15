@@ -64,7 +64,7 @@ func (l *life) SetScale(scale float32) Life {
 
 // KillPlayer removes one life of the player
 func KillPlayer() {
-	playerLives = playerLives[1:]
+	playerLives = playerLives[:len(playerLives)-1]
 }
 
 // IsAlive verifies if the player is alive

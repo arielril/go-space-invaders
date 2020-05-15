@@ -113,6 +113,14 @@ func (c *car) move(dir MoveDirection) Car {
 		break
 	}
 
+	if newPos < 0 {
+		newPos = 10
+	}
+
+	if newPos > 10 {
+		newPos = 0
+	}
+
 	c.SetX(newPos)
 
 	return c
@@ -128,7 +136,7 @@ func (c *car) MoveRight() Car {
 
 func (c *car) Shoot() {
 	bullet := NewBulletWithPos(
-		c.GetX(),
+		c.GetX()+.35,
 		c.GetY(),
 	)
 
@@ -150,6 +158,6 @@ func (c *car) GetBoundingBox() BoundingBox {
 }
 
 func (c *car) ResetPos() Car {
-	c.SetPos(0, 0)
+	c.SetPos(5, 0)
 	return c
 }

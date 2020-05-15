@@ -2,7 +2,6 @@ package opengl
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/arielril/go-space-invaders/game"
 
@@ -23,10 +22,10 @@ func KeyCallback(
 	action glfw.Action,
 	mods glfw.ModifierKey,
 ) {
-	if action == glfw.Press {
+	if action == glfw.Press || action == glfw.Repeat {
 		switch key {
 		case glfw.KeyEscape:
-			os.Exit(0)
+			w.SetShouldClose(true) // close the window
 			break
 		case glfw.KeyLeft:
 			game.GetCar().MoveLeft()
@@ -35,7 +34,6 @@ func KeyCallback(
 			game.GetCar().MoveRight()
 			break
 		case glfw.KeySpace:
-			// fmt.Println("Shoot!")
 			game.GetCar().Shoot()
 			break
 		}
@@ -61,7 +59,7 @@ func Reshape(w *glfw.Window) {
 	gl.MatrixMode(gl.PROJECTION)
 
 	gl.LoadIdentity()
-	gl.Ortho(0, 20, 0, 10, 1, 0)
+	gl.Ortho(0, 10, 0, 10, 1, 0)
 
 	gl.MatrixMode(gl.MODELVIEW)
 

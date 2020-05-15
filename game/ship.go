@@ -1,9 +1,7 @@
 package game
 
 import (
-	"fmt"
 	"math/rand"
-	"time"
 
 	"github.com/go-gl/gl/v2.1/gl"
 )
@@ -44,9 +42,9 @@ type Ship interface {
 	Die()
 	GetX() float32
 	GetY() float32
-	Collide(obj Object)
 	Move()
 	SetSpeed(fps float32) Ship
+	RestartPos()
 }
 
 // NewShip creates a new Ship struct
@@ -146,7 +144,6 @@ func (s *ship) GetY() float32 {
 
 func (s *ship) GetBoundingBox() BoundingBox {
 	shipWidth := float64(len(s.data[0]))
-	fmt.Printf("Ship height %v\n", len(s.data))
 	shipHeight := float64(len(s.data))
 
 	bb := NewBoundingBox(
@@ -157,10 +154,6 @@ func (s *ship) GetBoundingBox() BoundingBox {
 	)
 
 	return bb
-}
-
-func (s *ship) Collide(obj Object) {
-	// TODO execute the collision of the ship with some object
 }
 
 func (s *ship) SetSpeed(fps float32) Ship {
@@ -179,7 +172,6 @@ func (s *ship) Move() {
 }
 
 func (s *ship) RestartPos() {
-	fmt.Printf("Ship (%v) arrived in: %v s\n", s.sType, time.Since(startTime).Seconds())
-	r := float32(rand.Intn(20))
+	r := float32(rand.Intn(10))
 	s.SetPos(r, 10)
 }

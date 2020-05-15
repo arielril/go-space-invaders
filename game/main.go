@@ -24,27 +24,31 @@ const (
 // Init the game objects
 func Init() {
 	gameShips = []Ship{
+		NewShip(ships[Ship1], Ship1).SetPos(9, 8).(Ship),
+		NewShip(ships[Ship1], Ship1).SetPos(1, 6).(Ship),
+		NewShip(ships[Ship1], Ship1).SetPos(6, 7).(Ship),
+		NewShip(ships[Ship2], Ship2).SetPos(7, 9).(Ship),
 		NewShip(ships[Ship2], Ship2).SetPos(5, 5).(Ship),
-		// NewShip(ships[Ship3], Ship3).SetPos(2, 10).(Ship),
-		// NewShip(ships[Ship1], Ship1).SetPos(7, 10).(Ship),
-		// NewShip(ships[Ship4], Ship4).SetPos(0, 10).(Ship),
+		NewShip(ships[Ship3], Ship3).SetPos(3, 10).(Ship),
+		NewShip(ships[Ship3], Ship3).SetPos(7, 7).(Ship),
+		NewShip(ships[Ship4], Ship4).SetPos(1, 10).(Ship),
+		NewShip(ships[Ship4], Ship4).SetPos(5, 4).(Ship),
+		NewShip(ships[Ship4], Ship4).SetPos(7, 8).(Ship),
 	}
-
-	gameCar = NewCar(carData).SetPos(10, 0).(Car)
+	gameCar = NewCar(carData).SetPos(5, 0).(Car)
 	playerLives = []Life{
-		NewLife(lifeData, 17, 9),
-		NewLife(lifeData, 18, 9),
-		NewLife(lifeData, 19, 9),
+		NewLife(lifeData, 8.5, 9),
+		NewLife(lifeData, 9, 9),
+		NewLife(lifeData, 9.5, 9),
 	}
 	fps = util.NewFps()
 	startTime = time.Now()
-	fmt.Printf("Started at: %v\n", startTime)
 }
 
 func drawShips() {
 	for _, v := range gameShips {
 		v.SetScale(gameScale).Draw()
-		// v.SetSpeed(float32(fps.GetFPS())).Move()
+		v.SetSpeed(float32(fps.GetFPS())).Move()
 	}
 }
 
@@ -134,11 +138,10 @@ func Display(w *glfw.Window) {
 
 	// draw objects
 	drawGround()
-	drawLives()
-	drawCar()
-	// drawBoundingBoxes()
-	drawShips()
 	drawBullets()
+	drawCar()
+	drawShips()
+	drawLives()
 
 	// check for collisions
 	doCollisions()
@@ -147,8 +150,26 @@ func Display(w *glfw.Window) {
 	removeBulletsFromGame(w)
 	optimizeGame()
 
+	if PlayerHasWon() {
+		fmt.Println()
+		fmt.Println()
+		fmt.Println("----------------------------------------------------------------------------------------------")
+		fmt.Println(">>>>>>> Congratulations!! You just won the super, hiper, nice Space Invaders remake :D <<<<<<<")
+		fmt.Println("----------------------------------------------------------------------------------------------")
+		fmt.Println()
+		fmt.Println()
+		w.SetShouldClose(true)
+	}
+
 	if !IsAlive() {
-		// TODO end game
+		fmt.Println()
+		fmt.Println()
+		fmt.Println("----------------------------------------------------------------------------------------------")
+		fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>> Awwwnnnn, I'm sorry... You have lost :'( <<<<<<<<<<<<<<<<<<<<<<<<<<")
+		fmt.Println("----------------------------------------------------------------------------------------------")
+		fmt.Println()
+		fmt.Println()
+		w.SetShouldClose(true)
 	}
 
 	time.Sleep(

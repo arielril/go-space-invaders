@@ -20,10 +20,11 @@ type bullet struct {
 	x, y  float32
 	scale float32
 	speed float32
+	data  ObjectData
 }
 
 // NewBullet returns a new bullet struct
-func NewBullet() Bullet {
+func NewBullet(d ObjectData) Bullet {
 	speed := (10 * (1 / float32(maxFps))) / 3
 
 	return &bullet{
@@ -31,37 +32,42 @@ func NewBullet() Bullet {
 		y:     0,
 		scale: 1,
 		speed: speed,
+		data:  d,
 	}
 }
 
 // NewBulletWithPos returns a new bullet with the position set
 func NewBulletWithPos(x, y float32) Bullet {
-	b := NewBullet()
+	b := NewBullet(bulletData)
 
 	return b.SetPos(x, y).(Bullet)
 }
 
 func (b *bullet) Draw() {
+	bulletHeight := float32(len(b.data))
+
 	gl.PushMatrix()
 	{
-		gl.Color3f(0, 0, 0)
-
 		gl.Translatef(b.x, b.y, 0)
 		gl.Scalef(b.scale, b.scale, 1)
 
-		gl.Begin(gl.QUADS)
-		{
-			gl.Vertex2f(0, 0)
-			gl.Vertex2f(1, 0)
-			gl.Vertex2f(1, 1)
-			gl.Vertex2f(0, 1)
+		for i := range b.data {
+			y := float32(i)
 
-			gl.Vertex2f(0, 1)
-			gl.Vertex2f(1, 1)
-			gl.Vertex2f(1, 2)
-			gl.Vertex2f(0, 2)
+			for j, quadColor := range b.data[i] {
+				x := float32(j)
+				ChangeColorFromInt(quadColor)
+
+				gl.Begin(gl.QUADS)
+				{
+					gl.Vertex2f(x, bulletHeight-y)
+					gl.Vertex2f(x+1, bulletHeight-y)
+					gl.Vertex2f(x+1, bulletHeight-y-1)
+					gl.Vertex2f(x, bulletHeight-y-1)
+				}
+				gl.End()
+			}
 		}
-		gl.End()
 	}
 	gl.PopMatrix()
 }
@@ -130,8 +136,8 @@ func (b *bullet) Hit() {
 }
 
 func (b *bullet) GetBoundingBox() BoundingBox {
-	bWidth := float64(2)
-	bHeight := float64(2)
+	bWidth := float64(len(b.data[0]))
+	bHeight := float64(len(b.data))
 
 	bb := NewBoundingBox(
 		float64(b.GetX()),

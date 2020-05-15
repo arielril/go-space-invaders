@@ -1,8 +1,6 @@
 package game
 
 import (
-	"fmt"
-
 	glfw "github.com/go-gl/glfw/v3.3/glfw"
 )
 
@@ -55,9 +53,7 @@ func AddShoot(b Bullet) {
 	}
 }
 
-func getBulletFromShipHit(s Ship) Bullet {
-	shipBoundingBox := s.GetBoundingBox()
-
+func getBulletFromShipHit(shipBoundingBox BoundingBox) Bullet {
 	for _, bullet := range gameBullets {
 		if bullet == nil {
 			continue
@@ -65,8 +61,6 @@ func getBulletFromShipHit(s Ship) Bullet {
 
 		bulletBoundingBox := bullet.GetBoundingBox()
 		if bulletBoundingBox.CollidedWith(shipBoundingBox) {
-			// fmt.Printf("Apos = (%v, %v)\n", bullet.GetX(), bullet.GetY())
-			// fmt.Printf("Bpos = (%v, %v)\n", s.GetX(), s.GetY())
 			return bullet
 		}
 	}
@@ -83,27 +77,33 @@ func doCollisions() {
 	*/
 
 	for _, ship := range gameShips {
+		shipBoundingBox := ship.GetBoundingBox()
+
 		if len(gameBullets) > 0 {
 			// * bullet hitting some ship
-			bulletThatHitShip := getBulletFromShipHit(ship)
+			bulletThatHitShip := getBulletFromShipHit(shipBoundingBox)
 			if bulletThatHitShip != nil {
-				fmt.Printf("\nship hit %#v\n", ship)
-				fmt.Printf("bullet %#v\n", bulletThatHitShip)
-				fmt.Println("ship hit with bullet")
-
 				ship.Die()              // * bye bye ship :'(
 				bulletThatHitShip.Hit() // * nice work bullet! Go home now :D
-
 				continue
 			}
 		}
 
 		// * ship hitting the car
-		shipHitTheCar := false
+		carBoundingBox := GetCar().GetBoundingBox()
+		shipHitTheCar := shipBoundingBox.CollidedWith(carBoundingBox)
 		if shipHitTheCar {
-			fmt.Println("ship hit the car")
 			KillPlayer()
 			GetCar().ResetPos()
+			ship.RestartPos()
 		}
 	}
+}
+
+// PlayerHasWon returns wheather the player won the game or not
+func PlayerHasWon() bool {
+	if len(gameShips) <= 0 {
+		return true
+	}
+	return false
 }
