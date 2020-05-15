@@ -1,5 +1,7 @@
 # Basic Golang OpenGL example
 
+Project reposository is [here!](https://github.com/arielril/go-space-invaders)
+
 This project uses [Go-Gl](https://github.com/go-gl/gl) to create a scene with OpenGL and play with it.
 
 ## Dependencies
